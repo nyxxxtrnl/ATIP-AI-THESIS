@@ -357,7 +357,12 @@
         <strong>Professional Account</strong>
         <span id="mobileProfessionalAccountInfo">Verified psychiatrist · Professional Portal</span>
       </div>
-      <button class="secondary-btn" id="mobileProfileSettings" type="button">Open Settings</button>
+      <div class="settings-info">
+        <strong>Appearance</strong>
+        <span>Choose the display mode for this dashboard.</span>
+        <button class="secondary-btn" id="darkModeAction" type="button"
+          aria-pressed="false">Dark mode: Off</button>
+      </div>
       <div class="mobile-secondary-nav">
         <h3>More sections</h3>
         <button type="button" data-tab-target="results">Wellness Results</button>
@@ -366,31 +371,5 @@
       </div>
     </section>
   </main>
-
-  <div class="settings-backdrop" id="settingsDialog" hidden>
-    <section class="settings-dialog" role="dialog" aria-modal="true"
-      aria-labelledby="settingsTitle" aria-describedby="settingsDescription">
-      <button class="settings-close" id="closeSettings"
-        type="button" aria-label="Close settings">×</button>
-      <p class="eyebrow">PROFESSIONAL PORTAL</p>
-      <h2 id="settingsTitle">Settings</h2>
-      <p id="settingsDescription">
-        Manage the appearance of your dashboard and review account information.
-      </p>
-      <div class="settings-info">
-        <strong>Account</strong>
-        <span id="professionalAccountInfo">Verified psychiatrist · Professional Portal</span>
-      </div>
-      <div class="settings-info">
-        <strong>Appearance</strong>
-        <span>Choose the display mode for this dashboard.</span>
-        <button class="secondary-btn" id="darkModeAction" type="button"
-          aria-pressed="false">Dark mode: Off</button>
-      </div>
-      <p class="settings-note">
-        Only clients who explicitly authorize your account appear in this portal.
-      </p>
-    </section>
-  </div>
 </body>
 </html>

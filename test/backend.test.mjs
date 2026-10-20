@@ -119,6 +119,13 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
       assert.doesNotMatch(html, /id="tab-(?:client-messages|messages)"/);
       assert.match(html, /id="darkModeAction"/);
     }
+    if (page === "/Client%20Dashboard/index.html") {
+      assert.match(html, /<section[^>]*id="settings"[^>]*hidden/);
+    }
+    if (page === "/Psychiatrist%20Dashboard/psychiatrist.html") {
+      assert.match(html, /<section[^>]*id="profile"[^>]*hidden/);
+      assert.doesNotMatch(html, /id="settingsDialog"/);
+    }
     assert.match(html, /href="\/manifest\.webmanifest"/);
     assert.match(html, /src="\/assets\/atip-logo\.png"/);
     assert.match(html, /src="\/register-sw\.js"/);

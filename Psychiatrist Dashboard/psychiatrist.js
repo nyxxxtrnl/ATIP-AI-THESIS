@@ -58,7 +58,10 @@ $("mobileNavToggle").addEventListener("click", () => {
 });
 $("mobileNavBackdrop").addEventListener("click", () => setMobileNavOpen(false));
 document.addEventListener("keydown", event => {
-  if (event.key === "Escape") setMobileNavOpen(false);
+  if (event.key === "Escape") {
+    setMobileNavOpen(false);
+    closeAccountMenu();
+  }
 });
 
 let navigationTouchStart;
@@ -115,8 +118,6 @@ document.querySelectorAll("[data-tab-target]").forEach(button => {
     window.location.hash = tabId;
   });
 });
-
-$("mobileProfileSettings").addEventListener("click", () => $("settingsAction").click());
 
 window.addEventListener("hashchange", () => {
   showTab(window.location.hash.slice(1) || "dashboard");
@@ -472,15 +473,9 @@ $("accountMenuButton").addEventListener("click", () => {
 });
 $("settingsAction").addEventListener("click", () => {
   closeAccountMenu();
-  $("settingsDialog").hidden = false;
-  $("closeSettings").focus();
-});
-$("closeSettings").addEventListener("click", () => {
-  $("settingsDialog").hidden = true;
-  $("accountMenuButton").focus();
-});
-$("settingsDialog").addEventListener("click", event => {
-  if (event.target === $("settingsDialog")) $("settingsDialog").hidden = true;
+  showTab("profile");
+  window.location.hash = "profile";
+  $("darkModeAction").focus();
 });
 $("darkModeAction").addEventListener("click", () => {
   const enabled = !document.body.classList.contains("dark-mode");
@@ -502,7 +497,6 @@ document.addEventListener("click", event => {
 });
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") {
-    $("settingsDialog").hidden = true;
     closeAccountMenu();
   }
 });
