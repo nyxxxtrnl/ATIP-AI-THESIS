@@ -84,15 +84,39 @@ document.addEventListener("touchend", event => {
 }, { passive: true });
 
 document.querySelector('[role="tablist"]').addEventListener("keydown", event => {
-  if (!["ArrowDown", "ArrowUp"].includes(event.key)) return;
+  const isMobile = window.matchMedia("(max-width: 600px)").matches;
+  const keys = isMobile ? ["ArrowRight", "ArrowLeft"] : ["ArrowDown", "ArrowUp"];
+  if (!keys.includes(event.key)) return;
   event.preventDefault();
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const tabs = [...document.querySelectorAll('[role="tab"]')]
+    .filter(tab => !isMobile || tab.classList.contains("mobile-primary"));
   const index = Math.max(0, tabs.indexOf(document.activeElement));
-  const offset = event.key === "ArrowDown" ? 1 : -1;
+  const offset = event.key === (isMobile ? "ArrowRight" : "ArrowDown") ? 1 : -1;
   const next = tabs[(index + offset + tabs.length) % tabs.length];
   next.focus();
   next.click();
 });
+
+function updateTabOrientation() {
+  document.querySelector('[role="tablist"]').setAttribute(
+    "aria-orientation",
+    window.matchMedia("(max-width: 600px)").matches ? "horizontal" : "vertical"
+  );
+}
+
+updateTabOrientation();
+window.addEventListener("resize", updateTabOrientation);
+
+document.querySelectorAll("[data-tab-target]").forEach(button => {
+  button.addEventListener("click", () => {
+    const tabId = button.dataset.tabTarget;
+    showTab(tabId);
+    window.location.hash = tabId;
+  });
+});
+
+$("mobileProfileSettings").addEventListener("click", () => $("settingsAction").click());
+
 window.addEventListener("hashchange", () => {
   showTab(window.location.hash.slice(1) || "dashboard");
 });

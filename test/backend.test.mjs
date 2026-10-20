@@ -113,7 +113,8 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     const response = await fetch(`${baseUrl}${page}`);
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, /Public thesis demo — test data only/);
+    assert.match(html, /Public preview environment — fictional data only/);
+    assert.match(html, /Do not enter real[\s\S]*health information/);
     assert.match(html, /href="\/manifest\.webmanifest"/);
     assert.match(html, /src="\/assets\/atip-logo\.png"/);
     assert.match(html, /src="\/register-sw\.js"/);
