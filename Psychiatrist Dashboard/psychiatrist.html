@@ -59,8 +59,6 @@
         aria-label="Appointments, Calendar" aria-controls="appointments" tabindex="-1" data-mobile-label="Calendar" href="#appointments"><svg class="nav-icon" aria-hidden="true"><use href="#icon-calendar"></use></svg>Appointments</a>
       <a id="tab-assessments" role="tab" aria-selected="false"
         aria-controls="assessments" tabindex="-1" href="#assessments">Assessments</a>
-      <a id="tab-messages" role="tab" aria-selected="false"
-        aria-controls="messages" tabindex="-1" href="#messages">Messages</a>
       <a class="mobile-primary" id="tab-reports" role="tab" aria-selected="false"
         aria-label="Reports" aria-controls="reports" tabindex="-1" data-mobile-label="Reports" href="#reports"><svg class="nav-icon" aria-hidden="true"><use href="#icon-reports"></use></svg>Reports</a>
       <a id="tab-notes" role="tab" aria-selected="false"
@@ -96,15 +94,13 @@
       </div>
       <div class="account-menu">
         <button class="account account-menu-button" id="accountMenuButton"
-          type="button" aria-expanded="false" aria-controls="accountMenu">
+          type="button" aria-label="Professional account options"
+          aria-expanded="false" aria-controls="accountMenu">
           <span class="status-dot"></span>
-          Professional Account
           <span class="account-chevron" aria-hidden="true">▾</span>
         </button>
         <div class="account-dropdown" id="accountMenu" hidden>
           <button class="account-action" id="settingsAction" type="button">Settings</button>
-          <button class="account-action" id="darkModeAction" type="button"
-            aria-pressed="false">Dark mode: Off</button>
           <button class="account-action logout-action" id="logoutAction" type="button">Logout</button>
         </div>
       </div>
@@ -366,7 +362,6 @@
         <h3>More sections</h3>
         <button type="button" data-tab-target="results">Wellness Results</button>
         <button type="button" data-tab-target="assessments">Assessments</button>
-        <button type="button" data-tab-target="messages">Messages</button>
         <button type="button" data-tab-target="notes">Clinical Notes</button>
       </div>
     </section>
@@ -386,8 +381,13 @@
         <strong>Account</strong>
         <span id="professionalAccountInfo">Verified psychiatrist · Professional Portal</span>
       </div>
+      <div class="settings-info">
+        <strong>Appearance</strong>
+        <span>Choose the display mode for this dashboard.</span>
+        <button class="secondary-btn" id="darkModeAction" type="button"
+          aria-pressed="false">Dark mode: Off</button>
+      </div>
       <p class="settings-note">
-        Dark mode can be changed from the Professional Account menu.
         Only clients who explicitly authorize your account appear in this portal.
       </p>
     </section>

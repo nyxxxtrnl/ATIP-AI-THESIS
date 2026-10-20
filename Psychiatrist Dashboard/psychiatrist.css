@@ -884,8 +884,19 @@ td {
   color: var(--muted);
 }
 
+.settings-info .secondary-btn {
+  justify-self: start;
+  margin-top: 8px;
+}
+
 .settings-note {
   font-size: 11px !important;
+}
+
+@media (min-width: 601px) {
+  #tab-profile {
+    display: none;
+  }
 }
 
 button:hover {

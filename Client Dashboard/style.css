@@ -258,6 +258,34 @@ h1 {
   display: none;
 }
 
+.settings-appearance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 22px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.settings-appearance h3 {
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.settings-appearance p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (min-width: 601px) {
+  #tab-settings {
+    display: none;
+  }
+}
+
 .account-action {
   width: 100%;
   padding: 10px;
@@ -1376,6 +1404,11 @@ footer {
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
+  }
+
+  .settings-appearance {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .mobile-secondary-nav h3 {

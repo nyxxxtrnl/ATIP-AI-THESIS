@@ -89,7 +89,8 @@ document.querySelector('[role="tablist"]').addEventListener("keydown", event => 
   if (!keys.includes(event.key)) return;
   event.preventDefault();
   const tabs = [...document.querySelectorAll('[role="tab"]')]
-    .filter(tab => !isMobile || tab.classList.contains("mobile-primary"));
+    .filter(tab => getComputedStyle(tab).display !== "none" &&
+      (!isMobile || tab.classList.contains("mobile-primary")));
   const index = Math.max(0, tabs.indexOf(document.activeElement));
   const offset = event.key === (isMobile ? "ArrowRight" : "ArrowDown") ? 1 : -1;
   const next = tabs[(index + offset + tabs.length) % tabs.length];

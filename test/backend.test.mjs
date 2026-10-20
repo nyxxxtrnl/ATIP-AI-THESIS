@@ -115,6 +115,10 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     const html = await response.text();
     assert.match(html, /Public preview environment — fictional data only/);
     assert.match(html, /Do not enter real[\s\S]*health information/);
+    if (page !== "/AUTH/auth.html") {
+      assert.doesNotMatch(html, /id="tab-(?:client-messages|messages)"/);
+      assert.match(html, /id="darkModeAction"/);
+    }
     assert.match(html, /href="\/manifest\.webmanifest"/);
     assert.match(html, /src="\/assets\/atip-logo\.png"/);
     assert.match(html, /src="\/register-sw\.js"/);
