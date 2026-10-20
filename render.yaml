@@ -2,7 +2,7 @@ services:
   - type: web
     name: atip-ai-thesis-demo
     runtime: node
-    plan: starter
+    plan: free
     region: singapore
     buildCommand: npm ci
     startCommand: npm start
@@ -17,8 +17,4 @@ services:
       - key: ATIP_SECURE_COOKIE
         value: "true"
       - key: ATIP_DATA_DIR
-        value: /var/data
-    disk:
-      name: atip-demo-data
-      mountPath: /var/data
-      sizeGB: 1
+        value: /tmp/atip-data

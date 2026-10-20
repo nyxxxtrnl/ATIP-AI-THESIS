@@ -13,7 +13,7 @@ The SQLite database and private psychiatrist verification uploads are kept in `.
 
 ## Render thesis demo
 
-The root `render.yaml` configures a Render web service for a thesis demonstration. In Render, create a Blueprint from this repository and confirm the service and persistent disk before applying it. A persistent disk is required so SQLite data survives restarts and deploys; Render charges for paid web services and disks.
+The root `render.yaml` configures a free Render web service for a thesis demonstration. Free services may spin down when idle, which can make the first page load take about a minute. Their filesystem is temporary: SQLite accounts, appointments, messages, and uploaded documents can be erased when the service restarts, spins down, or redeploys. This setup has no persistent disk and is not suitable for important data.
 
 This configuration is for synthetic test data only. The app is not certified or configured for real patient information. Do not enter real names, credentials, health details, or professional documents. Use HTTPS, keep deployment access restricted to the project team where possible, and delete demo accounts and data when they are no longer needed.
 
