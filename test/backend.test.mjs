@@ -98,6 +98,15 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
 
   const rootPage = await fetch(`${baseUrl}/`);
   assert.equal(rootPage.status, 200);
+  for (const page of [
+    "/AUTH/auth.html",
+    "/Client%20Dashboard/index.html",
+    "/Psychiatrist%20Dashboard/psychiatrist.html"
+  ]) {
+    const response = await fetch(`${baseUrl}${page}`);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /Public thesis demo — test data only/);
+  }
   const dashboardPage = await fetch(`${baseUrl}/Client%20Dashboard/index.html`);
   assert.equal(dashboardPage.status, 200);
   assert.equal(dashboardPage.headers.get("cache-control"), "no-store, max-age=0");

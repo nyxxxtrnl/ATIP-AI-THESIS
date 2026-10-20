@@ -147,6 +147,18 @@ input {
   box-shadow: 0 12px 35px rgba(30, 45, 70, 0.06);
 }
 
+.demo-notice {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #f0d59f;
+  border-left: 4px solid #a66a14;
+  border-radius: 8px;
+  background: #fff8e8;
+  color: #553b13;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .mobile-brand {
   display: none;
 }

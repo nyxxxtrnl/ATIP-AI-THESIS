@@ -147,6 +147,24 @@ nav a.active {
   padding: 30px;
 }
 
+.demo-notice {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #f0d59f;
+  border-left: 4px solid #a66a14;
+  border-radius: 8px;
+  background: #fff8e8;
+  color: #553b13;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+body.dark-mode .demo-notice {
+  border-color: #77613a;
+  background: #44361f;
+  color: #f7deb0;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
