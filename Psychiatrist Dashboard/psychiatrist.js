@@ -35,11 +35,6 @@ function showTab(tabId) {
   $("pageTitle").textContent = tabId === "dashboard"
     ? "Psychiatrist Dashboard"
     : selected.textContent.trim();
-  const panel = panels.find(item => item.id === tabId);
-  const description = panel.querySelector(".panel-heading p");
-  $("pageDescription").textContent = description
-    ? description.textContent
-    : "Monitor authorized client wellness records.";
 }
 
 document.querySelectorAll('[role="tab"]').forEach(tab => {

@@ -22,11 +22,6 @@ function showTab(tabId) {
   $("pageTitle").textContent = tabId === "dashboard"
     ? "My Wellness Dashboard"
     : selectedTab.textContent.trim();
-  const selectedPanel = panels.find(panel => panel.id === tabId);
-  const description = selectedPanel.querySelector(".panel-heading p");
-  $("pageDescription").textContent = description
-    ? description.textContent
-    : "Your personal emotional wellness space.";
 }
 
 document.querySelectorAll('[role="tab"]').forEach(tab => {

@@ -116,6 +116,7 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     assert.match(html, /id="mobileNavToggle"/);
     assert.match(html, /id="mobileNavBackdrop"/);
     assert.match(html, /id="dashboardNavigation"/);
+    assert.doesNotMatch(html, /id="pageDescription"/);
   }
   const dashboardPage = await fetch(`${baseUrl}/Client%20Dashboard/index.html`);
   assert.equal(dashboardPage.status, 200);

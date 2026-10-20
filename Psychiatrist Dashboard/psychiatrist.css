@@ -223,7 +223,6 @@ h1 {
   color: var(--navy);
 }
 
-.topbar p,
 .welcome p,
 .panel-heading p {
   font-size: 13px;
@@ -1025,11 +1024,6 @@ footer {
 
   .topbar h1 {
     font-size: 20px;
-  }
-
-  .topbar > div:first-child > p {
-    font-size: 12px;
-    line-height: 1.5;
   }
 
   .panel-heading {
