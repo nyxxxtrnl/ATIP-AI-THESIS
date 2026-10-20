@@ -837,12 +837,6 @@ td {
   margin-top: 8px;
 }
 
-@media (min-width: 601px) {
-  #tab-profile {
-    display: none;
-  }
-}
-
 button:hover {
   opacity: 0.85;
 }

@@ -280,12 +280,6 @@ h1 {
   font-size: 12px;
 }
 
-@media (min-width: 601px) {
-  #tab-settings {
-    display: none;
-  }
-}
-
 .account-action {
   width: 100%;
   padding: 10px;
