@@ -9,7 +9,7 @@
   <script src="psychiatrist.js" defer></script>
 </head>
 <body>
-  <aside class="sidebar">
+  <aside class="sidebar" id="dashboardNavigation">
     <div class="brand">
       <div class="brand-icon">A</div>
       <div>
@@ -48,6 +48,8 @@
       </div>
     </div>
   </aside>
+  <button class="mobile-nav-backdrop" id="mobileNavBackdrop"
+    type="button" aria-label="Close navigation" hidden></button>
 
   <main class="main">
     <aside class="demo-notice" role="note">
@@ -56,6 +58,10 @@
       passwords used elsewhere, professional documents, or health information.
     </aside>
     <header class="topbar">
+      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button"
+        aria-expanded="false" aria-controls="dashboardNavigation">
+        <span aria-hidden="true">☰</span> Menu
+      </button>
       <div>
         <h1 id="pageTitle">Psychiatrist Dashboard</h1>
         <p id="pageDescription">Monitor authorized client wellness records.</p>

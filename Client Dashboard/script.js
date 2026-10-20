@@ -33,10 +33,47 @@ document.querySelectorAll('[role="tab"]').forEach(tab => {
   tab.addEventListener("click", event => {
     event.preventDefault();
     const tabId = tab.getAttribute("aria-controls");
+    setMobileNavOpen(false);
     showTab(tabId);
     window.location.hash = tabId;
   });
 });
+
+function setMobileNavOpen(open) {
+  document.body.classList.toggle("mobile-nav-open", open);
+  $("mobileNavToggle").setAttribute("aria-expanded", String(open));
+  $("mobileNavBackdrop").hidden = !open;
+}
+
+$("mobileNavToggle").addEventListener("click", () => {
+  setMobileNavOpen($("mobileNavToggle").getAttribute("aria-expanded") !== "true");
+});
+$("mobileNavBackdrop").addEventListener("click", () => setMobileNavOpen(false));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") setMobileNavOpen(false);
+});
+
+let navigationTouchStart;
+document.addEventListener("touchstart", event => {
+  if (event.touches.length !== 1) return;
+  navigationTouchStart = {
+    x: event.touches[0].clientX,
+    y: event.touches[0].clientY
+  };
+}, { passive: true });
+document.addEventListener("touchend", event => {
+  if (!navigationTouchStart || !event.changedTouches.length) return;
+  const touch = event.changedTouches[0];
+  const deltaX = touch.clientX - navigationTouchStart.x;
+  const deltaY = touch.clientY - navigationTouchStart.y;
+  const startedAtLeftEdge = navigationTouchStart.x <= 24;
+  navigationTouchStart = undefined;
+  if (Math.abs(deltaX) < 60 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+  if (startedAtLeftEdge && deltaX > 0) setMobileNavOpen(true);
+  else if (document.body.classList.contains("mobile-nav-open") && deltaX < 0) {
+    setMobileNavOpen(false);
+  }
+}, { passive: true });
 
 document.querySelector('[role="tablist"]').addEventListener("keydown", event => {
   if (!["ArrowDown", "ArrowUp"].includes(event.key)) return;
