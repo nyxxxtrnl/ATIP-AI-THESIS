@@ -992,17 +992,16 @@ footer {
   .mobile-nav-toggle {
     display: inline-flex;
     min-height: 42px;
+    width: 42px;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 8px 10px;
+    padding: 0;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--white);
     color: var(--text);
     font: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 22px;
     cursor: pointer;
   }
 
