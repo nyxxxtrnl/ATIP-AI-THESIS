@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <meta name="description" content="ATIP AI is a student prototype for personal wellness and consent-based care coordination.">
+  <title>ATIP AI | Wellness Support</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #1e2d46;
+      --text: #263750;
+      --muted: #68778d;
+      --teal: #397b7d;
+      --soft-teal: #e8f2f1;
+      --background: #f5f7fb;
+      --white: #fff;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(100% - 36px, 1040px);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      min-height: 82px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 22px;
+    }
+
+    .status {
+      padding: 7px 11px;
+      border: 1px solid #cfe2df;
+      border-radius: 999px;
+      background: var(--soft-teal);
+      color: #306b6c;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    main {
+      padding: 44px 0 56px;
+    }
+
+    .hero {
+      overflow: hidden;
+      padding: clamp(28px, 7vw, 68px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background:
+        radial-gradient(ellipse at 95% 5%, #d9ece9 0, transparent 38%),
+        linear-gradient(120deg, var(--white), #f1f7f6);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 680px;
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(36px, 7vw, 62px);
+      line-height: 1.08;
+      letter-spacing: -1.8px;
+    }
+
+    .intro {
+      max-width: 620px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 17px;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--navy);
+    }
+
+    .button:hover {
+      filter: brightness(1.12);
+    }
+
+    .section-title {
+      margin: 42px 0 16px;
+      color: var(--navy);
+      font-size: 22px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .feature {
+      padding: 21px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+    }
+
+    .feature h3 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 16px;
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .notice {
+      margin-top: 20px;
+      padding: 17px 19px;
+      border-left: 4px solid var(--teal);
+      border-radius: 8px;
+      background: var(--soft-teal);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .notice strong {
+      color: var(--navy);
+    }
+
+    .run-section {
+      margin-top: 38px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+    }
+
+    .run-section h2 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .run-section p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 16px 0 0;
+      padding: 15px;
+      border-radius: 9px;
+      background: #172438;
+      color: #f3f7fc;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 22px 0 30px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 650px) {
+      .page {
+        width: min(100% - 28px, 1040px);
+      }
+
+      .topbar {
+        min-height: 70px;
+      }
+
+      .status {
+        padding: 6px 9px;
+        font-size: 11px;
+      }
+
+      main {
+        padding: 24px 0 36px;
+      }
+
+      .hero {
+        border-radius: 18px;
+      }
+
+      .intro {
+        font-size: 15px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-title {
+        margin-top: 30px;
+      }
+
+      .run-section {
+        padding: 19px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="ATIP AI home">
+        <span class="brand-icon" aria-hidden="true">A</span>
+        <span>ATIP AI</span>
+      </a>
+      <span class="status">Student prototype</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Mental wellness support</p>
+        <h1 id="hero-title">A calmer space to support well-being.</h1>
+        <p class="intro">
+          ATIP AI is a student project exploring personal wellness tools and
+          consent-based coordination between clients and care professionals.
+        </p>
+        <div class="actions">
+          <a class="button" href="#run-locally">Run the app locally</a>
+          <a class="button secondary" href="./README.md">Project setup guide</a>
+        </div>
+      </section>
+
+      <h2 class="section-title">What the project explores</h2>
+      <section class="feature-grid" aria-label="Project features">
+        <article class="feature">
+          <h3>Client wellness dashboard</h3>
+          <p>A personal space for wellness results, activities, appointments, and messages.</p>
+        </article>
+        <article class="feature">
+          <h3>Consent-based sharing</h3>
+          <p>Clients choose whether to connect with an approved psychiatrist and can revoke access.</p>
+        </article>
+        <article class="feature">
+          <h3>Care coordination</h3>
+          <p>Connected accounts can coordinate appointments and exchange private messages.</p>
+        </article>
+      </section>
+
+      <aside class="notice" aria-label="Prototype limitation">
+        <strong>Important:</strong> This GitHub Pages site is a static project introduction.
+        Login, registration, database, and API features are not running here.
+        Do not enter personal or health information.
+      </aside>
+
+      <section class="run-section" id="run-locally" aria-labelledby="run-title">
+        <h2 id="run-title">Try the app on your computer</h2>
+        <p>Install Node.js 22.13 or newer, open a terminal in the project folder, then run:</p>
+        <pre><code>npm install
+npm start</code></pre>
+        <p style="margin-top: 12px">Then visit <strong>http://127.0.0.1:3000/</strong> in your browser.</p>
+      </section>
+    </main>
+
+    <footer>
+      ATIP AI · Student prototype · Not a substitute for professional mental health care
+    </footer>
+  </div>
+</body>
+</html>
