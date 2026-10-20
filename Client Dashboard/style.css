@@ -74,12 +74,7 @@ body {
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: var(--button-background);
-  color: white;
-  font-size: 23px;
-  font-weight: bold;
+  object-fit: cover;
 }
 
 .brand h2 {

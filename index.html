@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f5f7fb">
   <meta name="description" content="ATIP AI is a student prototype for personal wellness and consent-based care coordination.">
   <title>ATIP AI | Wellness Support</title>
+  <link rel="icon" type="image/png" href="./assets/atip-app-icon-192.png">
   <style>
     :root {
       color-scheme: light;
@@ -60,14 +61,11 @@
     }
 
     .brand-icon {
-      display: grid;
+      display: block;
       width: 40px;
       height: 40px;
-      place-items: center;
       border-radius: 12px;
-      background: var(--navy);
-      color: var(--white);
-      font-size: 22px;
+      object-fit: cover;
     }
 
     .status {
@@ -278,7 +276,7 @@
   <div class="page">
     <header class="topbar">
       <a class="brand" href="./" aria-label="ATIP AI home">
-        <span class="brand-icon" aria-hidden="true">A</span>
+        <img class="brand-icon" src="./assets/atip-logo.png" alt="">
         <span>ATIP AI</span>
       </a>
       <span class="status">Student prototype</span>

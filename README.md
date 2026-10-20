@@ -11,6 +11,10 @@ This project uses Node.js, Express, and the built-in SQLite module. Use Node.js 
 
 The SQLite database and private psychiatrist verification uploads are kept in `.data` beside the server by default. That folder is excluded from Git and is not served publicly. Set `ATIP_DATA_DIR` to a protected folder on a production host. Back up this folder securely.
 
+## Install on a phone
+
+On a supported mobile browser, open the HTTPS app URL and choose **Add to Home Screen** or **Install app** from the browser menu. The installed app uses the ATIP logo as its icon and requires an internet connection; it does not cache dashboard or account data offline.
+
 ## Render thesis demo
 
 The root `render.yaml` configures a free Render web service for a thesis demonstration. Free services may spin down when idle, which can make the first page load take about a minute. Their filesystem is temporary: SQLite accounts, appointments, messages, and uploaded documents can be erased when the service restarts, spins down, or redeploys. This setup has no persistent disk and is not suitable for important data.

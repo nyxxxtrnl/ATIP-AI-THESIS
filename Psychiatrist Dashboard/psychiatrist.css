@@ -91,12 +91,8 @@ body {
 .brand-icon {
   width: 42px;
   height: 42px;
-  display: grid;
-  place-items: center;
   border-radius: 12px;
-  background: var(--brand-icon-background);
-  font-size: 22px;
-  font-weight: bold;
+  object-fit: cover;
 }
 
 .brand h2 {

@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e2d46">
   <title>ATIP AI | Client Dashboard</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/assets/atip-app-icon-192.png">
+  <link rel="apple-touch-icon" href="/assets/atip-app-icon-180.png">
   <link rel="stylesheet" href="style.css">
   <script src="/api.js" defer></script>
+  <script src="/register-sw.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
   <aside class="sidebar" id="dashboardNavigation">
     <div class="brand">
-      <div class="brand-icon">A</div>
+      <img class="brand-icon" src="/assets/atip-logo.png" alt="">
       <div>
         <h2>ATIP AI</h2>
         <p>Mental Health Wellness</p>

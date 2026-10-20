@@ -740,6 +740,10 @@ app.use((request, response, next) => {
   }
   const isAllowedFile = requestedPath === "/api.js" ||
     requestedPath === "/healthz" ||
+    requestedPath === "/manifest.webmanifest" ||
+    requestedPath === "/register-sw.js" ||
+    requestedPath === "/sw.js" ||
+    /^\/assets\/atip-(?:logo\.png|app-icon-(?:192|512|180)\.png)$/.test(requestedPath) ||
     /^\/(?:AUTH|Client Dashboard|Psychiatrist Dashboard)\/[^/]+$/.test(requestedPath);
   if (requestedPath !== "/" && !isAllowedFile) {
     sendError(response, 404, "Resource not found.");

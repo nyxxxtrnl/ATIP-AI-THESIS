@@ -105,7 +105,30 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
   ]) {
     const response = await fetch(`${baseUrl}${page}`);
     assert.equal(response.status, 200);
-    assert.match(await response.text(), /Public thesis demo — test data only/);
+    const html = await response.text();
+    assert.match(html, /Public thesis demo — test data only/);
+    assert.match(html, /href="\/manifest\.webmanifest"/);
+    assert.match(html, /src="\/assets\/atip-logo\.png"/);
+    assert.match(html, /src="\/register-sw\.js"/);
+  }
+  const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);
+  assert.equal(manifestResponse.status, 200);
+  const manifest = await manifestResponse.json();
+  assert.equal(manifest.name, "ATIP AI Wellness Support");
+  assert.equal(manifest.start_url, "/AUTH/auth.html");
+  assert.deepEqual(
+    manifest.icons.map(icon => icon.sizes),
+    ["192x192", "512x512"]
+  );
+  assert.equal((await fetch(`${baseUrl}/sw.js`)).status, 200);
+  assert.equal((await fetch(`${baseUrl}/register-sw.js`)).status, 200);
+  for (const icon of [
+    "/assets/atip-logo.png",
+    "/assets/atip-app-icon-192.png",
+    "/assets/atip-app-icon-512.png",
+    "/assets/atip-app-icon-180.png"
+  ]) {
+    assert.equal((await fetch(`${baseUrl}${icon}`)).status, 200);
   }
   for (const page of [
     "/Client%20Dashboard/index.html",

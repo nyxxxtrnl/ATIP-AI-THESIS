@@ -58,13 +58,8 @@ input {
   width: 46px;
   height: 46px;
   flex-shrink: 0;
-  display: grid;
-  place-items: center;
   border-radius: 13px;
-  background: var(--teal);
-  color: white;
-  font-size: 25px;
-  font-weight: bold;
+  object-fit: cover;
 }
 
 .brand h1,
