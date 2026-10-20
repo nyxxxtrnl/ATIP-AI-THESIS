@@ -121,6 +121,7 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     }
     if (page === "/Client%20Dashboard/index.html") {
       assert.match(html, /<section[^>]*id="settings"[^>]*hidden/);
+      assert.match(html, /<form id="profileForm" hidden>/);
     }
     if (page === "/Psychiatrist%20Dashboard/psychiatrist.html") {
       assert.match(html, /<section[^>]*id="profile"[^>]*hidden/);
