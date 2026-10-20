@@ -11,6 +11,12 @@ This project uses Node.js, Express, and the built-in SQLite module. Use Node.js 
 
 The SQLite database and private psychiatrist verification uploads are kept in `.data` beside the server by default. That folder is excluded from Git and is not served publicly. Set `ATIP_DATA_DIR` to a protected folder on a production host. Back up this folder securely.
 
+## Render thesis demo
+
+The root `render.yaml` configures a Render web service for a thesis demonstration. In Render, create a Blueprint from this repository and confirm the service and persistent disk before applying it. A persistent disk is required so SQLite data survives restarts and deploys; Render charges for paid web services and disks.
+
+This configuration is for synthetic test data only. The app is not certified or configured for real patient information. Do not enter real names, credentials, health details, or professional documents. Use HTTPS, keep deployment access restricted to the project team where possible, and delete demo accounts and data when they are no longer needed.
+
 ## Account access and client consent
 
 - Client accounts become active after registration. A generated Client ID is shown in the registration confirmation.

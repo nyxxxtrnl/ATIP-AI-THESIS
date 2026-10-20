@@ -14,6 +14,7 @@ const dataDirectory = path.resolve(
 const verificationDirectory = path.join(dataDirectory, "verifications");
 const databasePath = path.join(dataDirectory, "atip.sqlite");
 const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || "127.0.0.1";
 const ingestApiKey = process.env.ATIP_INGEST_API_KEY || "";
 const secureCookie = process.env.ATIP_SECURE_COOKIE === "true";
 const sessionDurationMs = 7 * 24 * 60 * 60 * 1000;
@@ -43,6 +44,9 @@ db.exec(fs.readFileSync(path.join(__dirname, "database", "schema.sql"), "utf8"))
 
 const app = express();
 app.disable("x-powered-by");
+if (process.env.TRUST_PROXY === "true") {
+  app.set("trust proxy", 1);
+}
 app.use((request, response, next) => {
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Referrer-Policy", "same-origin");
@@ -735,6 +739,7 @@ app.use((request, response, next) => {
     return;
   }
   const isAllowedFile = requestedPath === "/api.js" ||
+    requestedPath === "/healthz" ||
     /^\/(?:AUTH|Client Dashboard|Psychiatrist Dashboard)\/[^/]+$/.test(requestedPath);
   if (requestedPath !== "/" && !isAllowedFile) {
     sendError(response, 404, "Resource not found.");
@@ -743,6 +748,10 @@ app.use((request, response, next) => {
   next();
 });
 app.use(express.static(__dirname, staticOptions));
+
+app.get("/healthz", (request, response) => {
+  response.json({ status: "ok" });
+});
 
 app.get("/", (request, response) => {
   response.redirect(302, "/AUTH/auth.html");
@@ -784,8 +793,8 @@ if (process.env.NODE_ENV === "production" && !secureCookie) {
   process.exit(1);
 }
 
-app.listen(port, "127.0.0.1", () => {
-  console.log(`ATIP is running at http://127.0.0.1:${port}`);
+app.listen(port, host, () => {
+  console.log(`ATIP is running at http://${host}:${port}`);
   console.log(`Private database and verification files: ${dataDirectory}`);
 });
 

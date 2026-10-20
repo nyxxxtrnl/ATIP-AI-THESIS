@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import fs from "node:fs";
+import http from "node:http";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
@@ -30,7 +31,8 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
       ...process.env,
       PORT: String(port),
       ATIP_DATA_DIR: dataDirectory,
-      ATIP_INGEST_API_KEY: "test-ingest-key"
+      ATIP_INGEST_API_KEY: "test-ingest-key",
+      TRUST_PROXY: "true"
     },
     stdio: ["ignore", "ignore", "inherit"]
   });
@@ -57,6 +59,27 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   assert.equal(ready, true, "server should start successfully");
+  const health = await fetch(`${baseUrl}/healthz`);
+  assert.equal(health.status, 200);
+  assert.deepEqual(await health.json(), { status: "ok" });
+
+  const proxiedLogin = await new Promise((resolve, reject) => {
+    const request = http.request({
+      hostname: "127.0.0.1",
+      port,
+      path: "/api/auth/login",
+      method: "POST",
+      headers: {
+        Host: "demo.example",
+        "X-Forwarded-Proto": "https",
+        Origin: "https://demo.example",
+        "Content-Type": "application/json"
+      }
+    }, resolve);
+    request.on("error", reject);
+    request.end(JSON.stringify({ email: "nobody@example.test", password: "wrong-password" }));
+  });
+  assert.equal(proxiedLogin.statusCode, 401);
 
   async function request(url, { cookie, origin = baseUrl, ...options } = {}) {
     const headers = new Headers(options.headers || {});
