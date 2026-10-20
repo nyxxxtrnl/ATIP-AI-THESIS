@@ -28,7 +28,23 @@ This configuration is for synthetic test data only. The app is not certified or 
 - The operator can review pending applications with `npm run admin:psychiatrists -- list`, inspect a private application and its document path with `npm run admin:psychiatrists -- show <user-id>`, then approve or reject using the listed user ID. Run these commands only on the trusted server machine and verify the documents independently.
 - A client shares data by signing in, opening **Profile & Settings**, entering the email of an already approved psychiatrist, and confirming consent. The client can revoke that connection from the same page.
 - A psychiatrist can access only records for clients who have consented to that specific account.
-- Social sign-in (Google, Facebook, Discord) is not enabled; OAuth provider credentials and callback configuration are required.
+- Google, Facebook, and Discord OAuth sign-in creates or signs in client accounts only. Provider sign-in verifies the provider account/email, not professional qualifications. Psychiatrist accounts must continue to use the separate license-upload and manual-review process.
+
+### Configure social sign-in
+
+Create an OAuth application in each provider's developer console, enable its sign-in product, and configure these exact HTTPS callback URLs:
+
+| Provider | OAuth callback URL |
+| --- | --- |
+| Google | `https://atip-ai-thesis-demo.onrender.com/api/auth/oauth/google/callback` |
+| Facebook | `https://atip-ai-thesis-demo.onrender.com/api/auth/oauth/facebook/callback` |
+| Discord | `https://atip-ai-thesis-demo.onrender.com/api/auth/oauth/discord/callback` |
+
+For Google, enable the OAuth consent screen and request the `openid`, `email`, and `profile` scopes. For Facebook, enable Facebook Login and request `email` and `public_profile`. For Discord, register the callback and request `identify` and `email`. Provider apps may require review or an allow-listed test account before public users can sign in.
+
+In Render, open the service's **Environment** settings and add the applicable client ID and secret pairs as secret environment variables: `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET`, and `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET`. Keep the existing `ATIP_PUBLIC_URL=https://atip-ai-thesis-demo.onrender.com`. Save the changes to trigger a redeploy. Do not put provider secrets in browser code, Git, or chat messages.
+
+An OAuth identity is stored separately from password accounts. If the same email already has an ATIP account, the app will not silently link it; use its existing sign-in method. If an OAuth provider is not configured, its button returns a clear setup message rather than pretending sign-in succeeded.
 
 ## Dashboard data stored in SQL
 

@@ -32,7 +32,14 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
       PORT: String(port),
       ATIP_DATA_DIR: dataDirectory,
       ATIP_INGEST_API_KEY: "test-ingest-key",
-      TRUST_PROXY: "true"
+      TRUST_PROXY: "true",
+      ATIP_PUBLIC_URL: baseUrl,
+      GOOGLE_CLIENT_ID: "test-google-client-id",
+      GOOGLE_CLIENT_SECRET: "test-google-client-secret",
+      FACEBOOK_CLIENT_ID: "test-facebook-client-id",
+      FACEBOOK_CLIENT_SECRET: "test-facebook-client-secret",
+      DISCORD_CLIENT_ID: "test-discord-client-id",
+      DISCORD_CLIENT_SECRET: "test-discord-client-secret"
     },
     stdio: ["ignore", "ignore", "inherit"]
   });
@@ -111,6 +118,57 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     assert.match(html, /src="\/assets\/atip-logo\.png"/);
     assert.match(html, /src="\/register-sw\.js"/);
   }
+  const authResponse = await fetch(`${baseUrl}/AUTH/auth.html`);
+  const authHtml = await authResponse.text();
+  for (const provider of ["google", "facebook", "discord"]) {
+    assert.match(authHtml, new RegExp(`href="/api/auth/oauth/${provider}"`));
+  }
+  assert.match(authHtml, /Social sign-in creates client accounts only/);
+
+  const oauthProviders = [
+    ["google", "accounts.google.com", "openid email profile"],
+    ["facebook", "www.facebook.com", "email public_profile"],
+    ["discord", "discord.com", "identify email"]
+  ];
+  for (const [provider, expectedHost, expectedScopes] of oauthProviders) {
+    const authorization = await fetch(`${baseUrl}/api/auth/oauth/${provider}`, {
+      redirect: "manual"
+    });
+    assert.equal(authorization.status, 302);
+    const authorizationUrl = new URL(authorization.headers.get("location"));
+    assert.equal(authorizationUrl.hostname, expectedHost);
+    assert.equal(
+      authorizationUrl.searchParams.get("redirect_uri"),
+      `${baseUrl}/api/auth/oauth/${provider}/callback`
+    );
+    assert.equal(authorizationUrl.searchParams.get("scope"), expectedScopes);
+    const stateCookie = authorization.headers.get("set-cookie");
+    assert.match(stateCookie, new RegExp(`atip_oauth_${provider}_state=[A-Za-z0-9_-]+`));
+    assert.match(stateCookie, /HttpOnly/);
+    assert.match(stateCookie, /SameSite=Lax/);
+    const cookiePair = stateCookie.split(";")[0];
+    const state = cookiePair.split("=")[1];
+
+    const invalidCallback = await fetch(
+      `${baseUrl}/api/auth/oauth/${provider}/callback?error=access_denied&state=incorrect`,
+      { redirect: "manual" }
+    );
+    assert.equal(invalidCallback.status, 303);
+    assert.match(invalidCallback.headers.get("location"), /oauth_error=oauth_invalid_state/);
+
+    const cancelledCallback = await fetch(
+      `${baseUrl}/api/auth/oauth/${provider}/callback?error=access_denied&state=${state}`,
+      { headers: { Cookie: cookiePair }, redirect: "manual" }
+    );
+    assert.equal(cancelledCallback.status, 303);
+    assert.match(cancelledCallback.headers.get("location"), /oauth_error=oauth_cancelled/);
+    assert.match(cancelledCallback.headers.get("set-cookie"), /Max-Age=0/);
+  }
+  assert.equal(
+    (await fetch(`${baseUrl}/api/auth/oauth/unsupported`, { redirect: "manual" })).status,
+    404
+  );
+
   const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);
   assert.equal(manifestResponse.status, 200);
   const manifest = await manifestResponse.json();

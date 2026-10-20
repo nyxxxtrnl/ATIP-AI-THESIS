@@ -64,8 +64,21 @@
         <form id="loginForm" aria-labelledby="loginHeading">
           <div class="form-heading">
             <h2 id="loginHeading">Welcome back</h2>
-            <p>Sign in to access your ATIP AI account.</p>
+            <p>Sign in or create a client account with a provider.</p>
           </div>
+
+          <div class="oauth-options" aria-label="Sign in with a provider">
+            <a class="oauth-button" href="/api/auth/oauth/google">Continue with Google</a>
+            <a class="oauth-button" href="/api/auth/oauth/facebook">Continue with Facebook</a>
+            <a class="oauth-button" href="/api/auth/oauth/discord">Continue with Discord</a>
+          </div>
+
+          <p class="oauth-disclaimer">
+            Social sign-in creates client accounts only. Psychiatrist accounts require
+            separate professional credential review.
+          </p>
+
+          <div class="form-divider" aria-hidden="true"><span>or use email</span></div>
 
           <label for="loginEmail">Email Address</label>
           <input id="loginEmail" name="email"

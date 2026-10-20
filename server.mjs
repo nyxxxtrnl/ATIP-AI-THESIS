@@ -31,6 +31,29 @@ const allowedUploadTypes = new Map([
   ["image/png", ".png"],
   ["application/pdf", ".pdf"]
 ]);
+const oauthProviders = {
+  google: {
+    clientIdEnv: "GOOGLE_CLIENT_ID",
+    clientSecretEnv: "GOOGLE_CLIENT_SECRET",
+    authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
+    tokenEndpoint: "https://oauth2.googleapis.com/token",
+    scopes: ["openid", "email", "profile"]
+  },
+  facebook: {
+    clientIdEnv: "FACEBOOK_CLIENT_ID",
+    clientSecretEnv: "FACEBOOK_CLIENT_SECRET",
+    authorizationEndpoint: "https://www.facebook.com/v22.0/dialog/oauth",
+    tokenEndpoint: "https://graph.facebook.com/v22.0/oauth/access_token",
+    scopes: ["email", "public_profile"]
+  },
+  discord: {
+    clientIdEnv: "DISCORD_CLIENT_ID",
+    clientSecretEnv: "DISCORD_CLIENT_SECRET",
+    authorizationEndpoint: "https://discord.com/oauth2/authorize",
+    tokenEndpoint: "https://discord.com/api/oauth2/token",
+    scopes: ["identify", "email"]
+  }
+};
 
 fs.mkdirSync(verificationDirectory, { recursive: true, mode: 0o700 });
 
@@ -104,7 +127,7 @@ function publicUser(user) {
   };
 }
 
-function createSession(userId, response) {
+function createSession(userId, response, sameSite = "Strict") {
   const token = crypto.randomBytes(32).toString("base64url");
   const expiresAt = Date.now() + sessionDurationMs;
   db.prepare(`
@@ -114,8 +137,121 @@ function createSession(userId, response) {
 
   response.setHeader(
     "Set-Cookie",
-    `atip_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${Math.floor(sessionDurationMs / 1000)}${secureCookie ? "; Secure" : ""}`
+    `atip_session=${token}; HttpOnly; SameSite=${sameSite}; Path=/; Max-Age=${Math.floor(sessionDurationMs / 1000)}${secureCookie ? "; Secure" : ""}`
   );
+}
+
+function getOAuthRedirectUri(request, provider) {
+  const configuredBase = process.env.ATIP_PUBLIC_URL ||
+    `${request.protocol}://${request.get("host")}`;
+  const baseUrl = new URL(configuredBase);
+  if (baseUrl.protocol !== "https:" &&
+      !(baseUrl.protocol === "http:" && ["localhost", "127.0.0.1"].includes(baseUrl.hostname))) {
+    throw new ApiError(500, "OAuth requires an HTTPS public URL.");
+  }
+  return new URL(`/api/auth/oauth/${provider}/callback`, baseUrl).href;
+}
+
+function getOAuthCookieName(provider) {
+  return `atip_oauth_${provider}_state`;
+}
+
+function getCookie(request, name) {
+  const prefix = `${name}=`;
+  const cookie = (request.headers.cookie || "")
+    .split(";")
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix));
+  return cookie ? cookie.slice(prefix.length) : "";
+}
+
+function clearOAuthStateCookie(provider) {
+  return `${getOAuthCookieName(provider)}=; HttpOnly; SameSite=Lax; Path=/api/auth/oauth/${provider}; Max-Age=0${secureCookie ? "; Secure" : ""}`;
+}
+
+function redirectOAuthError(response, provider, errorCode) {
+  response.setHeader("Set-Cookie", clearOAuthStateCookie(provider));
+  response.redirect(303,
+    `/AUTH/auth.html?oauth_error=${encodeURIComponent(errorCode)}&provider=${encodeURIComponent(provider)}`
+  );
+}
+
+async function fetchOAuthJson(url, options) {
+  const response = await fetch(url, {
+    ...options,
+    signal: AbortSignal.timeout(10000)
+  });
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error("OAuth provider returned an invalid response.");
+  }
+  if (!response.ok) throw new Error("OAuth provider rejected the request.");
+  return data;
+}
+
+async function getOrCreateOAuthClient(provider, profile) {
+  const email = typeof profile.email === "string" ? profile.email.trim().toLowerCase() : "";
+  const providerUserId = typeof profile.id === "string" ? profile.id : "";
+  const name = typeof profile.name === "string" && profile.name.trim()
+    ? profile.name.trim().slice(0, 100)
+    : email.split("@")[0];
+  if (!validEmail(email)) throw new ApiError(400, "oauth_email_missing");
+  if (!providerUserId || providerUserId.length > 255) {
+    throw new ApiError(400, "oauth_provider_error");
+  }
+
+  const findIdentity = () => db.prepare(`
+    SELECT users.*
+    FROM oauth_identities
+    JOIN users ON users.id = oauth_identities.user_id
+    WHERE oauth_identities.provider = ? AND oauth_identities.provider_user_id = ?
+  `).get(provider, providerUserId);
+  const existingIdentity = findIdentity();
+  if (existingIdentity) {
+    if (existingIdentity.role !== "client" || existingIdentity.status !== "active") {
+      throw new ApiError(403, "oauth_account_unavailable");
+    }
+    return existingIdentity;
+  }
+  if (db.prepare("SELECT id FROM users WHERE email = ?").get(email)) {
+    throw new ApiError(409, "oauth_account_exists");
+  }
+
+  const passwordHash = await makePasswordHash(crypto.randomBytes(48).toString("base64url"));
+  const clientId = makeClientId();
+  const now = new Date().toISOString();
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const racedIdentity = findIdentity();
+    if (racedIdentity) {
+      if (racedIdentity.role !== "client" || racedIdentity.status !== "active") {
+        throw new ApiError(403, "oauth_account_unavailable");
+      }
+      db.exec("COMMIT");
+      return racedIdentity;
+    }
+    if (db.prepare("SELECT id FROM users WHERE email = ?").get(email)) {
+      throw new ApiError(409, "oauth_account_exists");
+    }
+    const inserted = db.prepare(`
+      INSERT INTO users (email, name, role, password_hash, status, client_id, created_at)
+      VALUES (?, ?, 'client', ?, 'active', ?, ?)
+    `).run(email, name, passwordHash, clientId, now);
+    db.prepare(`
+      INSERT INTO oauth_identities (provider, provider_user_id, user_id, created_at)
+      VALUES (?, ?, ?, ?)
+    `).run(provider, providerUserId, inserted.lastInsertRowid, now);
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      throw new ApiError(409, "oauth_account_exists");
+    }
+    throw error;
+  }
+  return db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 }
 
 function requireAuth(request, response, next) {
@@ -360,10 +496,156 @@ app.post("/api/auth/login", requireOrigin, checkLoginRateLimit,
     return;
   }
 
-  createSession(user.id, response);
+  createSession(user.id, response, "Lax");
   response.json({ user: publicUser(user) });
   })
 );
+
+app.get("/api/auth/oauth/:provider", (request, response) => {
+  const provider = request.params.provider;
+  if (!Object.hasOwn(oauthProviders, provider)) {
+    sendError(response, 404, "This sign-in provider is not supported.");
+    return;
+  }
+  const configuration = oauthProviders[provider];
+  const clientId = process.env[configuration.clientIdEnv];
+  const clientSecret = process.env[configuration.clientSecretEnv];
+  if (!clientId || !clientSecret) {
+    redirectOAuthError(response, provider, "oauth_not_configured");
+    return;
+  }
+
+  let redirectUri;
+  try {
+    redirectUri = getOAuthRedirectUri(request, provider);
+  } catch (error) {
+    console.error("OAuth public URL configuration failed.", error.message);
+    redirectOAuthError(response, provider, "oauth_not_configured");
+    return;
+  }
+
+  const state = crypto.randomBytes(32).toString("base64url");
+  const authorizationUrl = new URL(configuration.authorizationEndpoint);
+  authorizationUrl.searchParams.set("client_id", clientId);
+  authorizationUrl.searchParams.set("redirect_uri", redirectUri);
+  authorizationUrl.searchParams.set("response_type", "code");
+  authorizationUrl.searchParams.set("scope", configuration.scopes.join(" "));
+  authorizationUrl.searchParams.set("state", state);
+  if (provider === "google") authorizationUrl.searchParams.set("prompt", "select_account");
+
+  response.setHeader(
+    "Set-Cookie",
+    `${getOAuthCookieName(provider)}=${state}; HttpOnly; SameSite=Lax; Path=/api/auth/oauth/${provider}; Max-Age=600${secureCookie || request.secure ? "; Secure" : ""}`
+  );
+  response.redirect(302, authorizationUrl.href);
+});
+
+app.get("/api/auth/oauth/:provider/callback", asyncRoute(async (request, response) => {
+  const provider = request.params.provider;
+  if (!Object.hasOwn(oauthProviders, provider)) {
+    sendError(response, 404, "This sign-in provider is not supported.");
+    return;
+  }
+  const configuration = oauthProviders[provider];
+
+  const suppliedState = typeof request.query.state === "string" ? request.query.state : "";
+  const storedState = getCookie(request, getOAuthCookieName(provider));
+  const suppliedStateBytes = Buffer.from(suppliedState);
+  const storedStateBytes = Buffer.from(storedState);
+  if (!storedState || suppliedStateBytes.length !== storedStateBytes.length ||
+      !crypto.timingSafeEqual(suppliedStateBytes, storedStateBytes)) {
+    redirectOAuthError(response, provider, "oauth_invalid_state");
+    return;
+  }
+  if (request.query.error) {
+    redirectOAuthError(response, provider, "oauth_cancelled");
+    return;
+  }
+  const code = typeof request.query.code === "string" ? request.query.code : "";
+  if (!code || !process.env[configuration.clientIdEnv] ||
+      !process.env[configuration.clientSecretEnv]) {
+    redirectOAuthError(response, provider, "oauth_not_configured");
+    return;
+  }
+
+  let redirectUri;
+  try {
+    redirectUri = getOAuthRedirectUri(request, provider);
+  } catch (error) {
+    console.error("OAuth public URL configuration failed.", error.message);
+    redirectOAuthError(response, provider, "oauth_not_configured");
+    return;
+  }
+
+  try {
+    const tokenParameters = new URLSearchParams({
+      client_id: process.env[configuration.clientIdEnv],
+      client_secret: process.env[configuration.clientSecretEnv],
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: redirectUri
+    });
+    let tokenData;
+    if (provider === "facebook") {
+      const tokenUrl = new URL(configuration.tokenEndpoint);
+      tokenParameters.delete("grant_type");
+      for (const [key, value] of tokenParameters) tokenUrl.searchParams.set(key, value);
+      tokenData = await fetchOAuthJson(tokenUrl);
+    } else {
+      tokenData = await fetchOAuthJson(configuration.tokenEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: tokenParameters
+      });
+    }
+    if (typeof tokenData.access_token !== "string") {
+      throw new Error("OAuth provider did not return an access token.");
+    }
+
+    let profile;
+    if (provider === "google") {
+      const userInfo = await fetchOAuthJson("https://openidconnect.googleapis.com/v1/userinfo", {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+      });
+      if (userInfo.email_verified !== true) {
+        redirectOAuthError(response, provider, "oauth_email_unverified");
+        return;
+      }
+      profile = { id: userInfo.sub, email: userInfo.email, name: userInfo.name };
+    } else if (provider === "facebook") {
+      const userInfoUrl = new URL("https://graph.facebook.com/v22.0/me");
+      userInfoUrl.searchParams.set("fields", "id,name,email");
+      profile = await fetchOAuthJson(userInfoUrl, {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+      });
+    } else {
+      const userInfo = await fetchOAuthJson("https://discord.com/api/users/@me", {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+      });
+      if (userInfo.verified !== true) {
+        redirectOAuthError(response, provider, "oauth_email_unverified");
+        return;
+      }
+      profile = { id: userInfo.id, email: userInfo.email, name: userInfo.global_name || userInfo.username };
+    }
+
+    const user = await getOrCreateOAuthClient(provider, profile);
+    createSession(user.id, response);
+    response.setHeader("Set-Cookie", [
+      response.getHeader("Set-Cookie"),
+      clearOAuthStateCookie(provider)
+    ]);
+    response.redirect(303, "/Client%20Dashboard/index.html");
+  } catch (error) {
+    const errorCode = error instanceof ApiError
+      ? error.message
+      : "oauth_provider_error";
+    if (!(error instanceof ApiError)) {
+      console.error("OAuth provider callback failed.", provider, error.name);
+    }
+    redirectOAuthError(response, provider, errorCode);
+  }
+}));
 
 app.get("/api/auth/me", (request, response) => {
   const token = getSessionToken(request);

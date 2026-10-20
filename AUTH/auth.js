@@ -145,6 +145,24 @@ function openDashboard(user) {
   window.location.replace(target);
 }
 
+function showOAuthErrorFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get("oauth_error");
+  if (!error) return false;
+  const messages = {
+    oauth_not_configured: "Social sign-in is not configured yet. Ask the site administrator to finish the provider setup.",
+    oauth_invalid_state: "The sign-in request expired or could not be verified. Please try again.",
+    oauth_cancelled: "Sign-in was cancelled. You can try again whenever you are ready.",
+    oauth_email_unverified: "Verify your email address with the provider before using social sign-in.",
+    oauth_email_missing: "The provider did not share an email address. Allow email access and try again.",
+    oauth_account_exists: "An account already uses that email. Sign in with its existing method; accounts are not automatically linked.",
+    oauth_account_unavailable: "This account cannot use client social sign-in. Psychiatrist accounts require the separate professional review process.",
+    oauth_provider_error: "The provider could not complete sign-in. Please try again later."
+  };
+  showMessage(messages[error] || messages.oauth_provider_error, true);
+  return true;
+}
+
 document.getElementById("goSignup").addEventListener("click", showSignup);
 document.getElementById("goLogin").addEventListener("click", showLogin);
 document.getElementById("backToLogin").addEventListener("click", showLogin);
@@ -246,6 +264,6 @@ async function restoreSession() {
 updateRoleFields();
 if (window.location.protocol === "file:") {
   openBackendFromFile();
-} else {
+} else if (!showOAuthErrorFromUrl()) {
   restoreSession();
 }

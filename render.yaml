@@ -18,3 +18,5 @@ services:
         value: "true"
       - key: ATIP_DATA_DIR
         value: /tmp/atip-data
+      - key: ATIP_PUBLIC_URL
+        value: https://atip-ai-thesis-demo.onrender.com

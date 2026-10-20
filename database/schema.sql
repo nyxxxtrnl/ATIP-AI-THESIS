@@ -20,6 +20,15 @@ CREATE TABLE IF NOT EXISTS sessions (
   created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS oauth_identities (
+  provider TEXT NOT NULL CHECK (provider IN ('google', 'facebook', 'discord')),
+  provider_user_id TEXT NOT NULL,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (provider, provider_user_id),
+  UNIQUE (provider, user_id)
+);
+
 CREATE TABLE IF NOT EXISTS client_links (
   client_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   psychiatrist_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
