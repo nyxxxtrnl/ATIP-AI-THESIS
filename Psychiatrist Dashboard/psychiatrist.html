@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATIP AI | Psychiatrist Dashboard</title>
+  <link rel="stylesheet" href="psychiatrist.css">
+  <script src="/api.js" defer></script>
+  <script src="psychiatrist.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">A</div>
+      <div>
+        <h2>ATIP AI</h2>
+        <p>Mental Health Wellness</p>
+      </div>
+    </div>
+
+    <div class="role">PSYCHIATRIST PORTAL</div>
+
+    <nav role="tablist" aria-label="Psychiatrist dashboard sections"
+      aria-orientation="vertical">
+      <a class="active" id="tab-dashboard" role="tab" aria-selected="true"
+        aria-controls="dashboard" tabindex="0" href="#dashboard">Dashboard</a>
+      <a id="tab-clients" role="tab" aria-selected="false"
+        aria-controls="clients" tabindex="-1" href="#clients">Clients</a>
+      <a id="tab-results" role="tab" aria-selected="false"
+        aria-controls="results" tabindex="-1" href="#results">Wellness Results</a>
+      <a id="tab-appointments" role="tab" aria-selected="false"
+        aria-controls="appointments" tabindex="-1" href="#appointments">Appointments</a>
+      <a id="tab-assessments" role="tab" aria-selected="false"
+        aria-controls="assessments" tabindex="-1" href="#assessments">Assessments</a>
+      <a id="tab-messages" role="tab" aria-selected="false"
+        aria-controls="messages" tabindex="-1" href="#messages">Messages</a>
+      <a id="tab-reports" role="tab" aria-selected="false"
+        aria-controls="reports" tabindex="-1" href="#reports">Reports</a>
+      <a id="tab-notes" role="tab" aria-selected="false"
+        aria-controls="notes" tabindex="-1" href="#notes">Clinical Notes</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="avatar">DR</div>
+      <div>
+        <strong>Psychiatrist</strong>
+        <p class="profile-status"><span class="profile-status-dot"></span>Active</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Psychiatrist Dashboard</h1>
+        <p id="pageDescription">Monitor authorized client wellness records.</p>
+      </div>
+      <div class="account-menu">
+        <button class="account account-menu-button" id="accountMenuButton"
+          type="button" aria-expanded="false" aria-controls="accountMenu">
+          <span class="status-dot"></span>
+          Professional Account
+          <span class="account-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="account-dropdown" id="accountMenu" hidden>
+          <button class="account-action" id="settingsAction" type="button">Settings</button>
+          <button class="account-action" id="darkModeAction" type="button"
+            aria-pressed="false">Dark mode: Off</button>
+          <button class="account-action logout-action" id="logoutAction" type="button">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="tab-panel" id="dashboard" role="tabpanel"
+      aria-labelledby="tab-dashboard">
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">ATIP AI · WELLNESS OVERVIEW</p>
+          <h2>Welcome back, Psychiatrist</h2>
+          <p>Review results received from the connected robot.</p>
+        </div>
+        <div class="welcome-icon">✚</div>
+      </section>
+
+      <section class="stats">
+        <article class="stat-card">
+          <span>Total Clients</span>
+          <h2 id="totalClients">0</h2>
+          <p>Registered clients</p>
+        </article>
+
+        <article class="stat-card">
+          <span>Results Received</span>
+          <h2 id="totalResults">0</h2>
+          <p>Recorded assessments</p>
+        </article>
+
+        <article class="stat-card">
+          <span>Latest Updates</span>
+          <h2 id="latestUpdates">0</h2>
+          <p>Results today</p>
+        </article>
+      </section>
+
+      <section class="panel status-panel" aria-labelledby="clientStatusTitle">
+        <div class="panel-heading">
+          <div>
+            <h2 id="clientStatusTitle">Client Status Overview</h2>
+            <p>Based on the latest recorded result for each client.</p>
+          </div>
+        </div>
+        <div class="status-stats">
+          <article class="status-card at-risk">
+            <span>At Risk</span>
+            <strong id="atRiskCount">0</strong>
+          </article>
+          <article class="status-card improving">
+            <span>Improving</span>
+            <strong id="improvingCount">0</strong>
+          </article>
+          <article class="status-card stable">
+            <span>Stable</span>
+            <strong id="stableCount">0</strong>
+          </article>
+        </div>
+        <p class="helper status-disclaimer">
+          Statuses reflect recorded labels only; they are not a diagnosis or clinical risk assessment.
+        </p>
+      </section>
+
+      <footer>
+        ATIP AI · Mental Health Wellness System
+      </footer>
+    </section>
+
+    <section class="panel tab-panel" id="clients" role="tabpanel"
+      aria-labelledby="tab-clients" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Client Records</h2>
+          <p>Only clients authorized for your account.</p>
+        </div>
+        <input id="searchClient" type="search"
+          placeholder="Search client ID..." aria-label="Search clients">
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client ID</th>
+              <th>Latest Result</th>
+              <th>Date Recorded</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="clientTable">
+            <tr>
+              <td colspan="4" class="empty">
+                No client records available.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-panel" id="results" role="tabpanel"
+      aria-labelledby="tab-results" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Wellness Results</h2>
+          <p>Processed results supplied by the connected system.</p>
+        </div>
+        <button class="secondary-btn" id="refreshResults">Refresh</button>
+      </div>
+
+      <div id="resultsList" class="results-list">
+        <div class="empty">
+          No results have been received yet.
+        </div>
+      </div>
+    </section>
+
+    <section class="panel tab-panel" id="appointments" role="tabpanel"
+      aria-labelledby="tab-appointments" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Appointments</h2>
+          <p>Schedule an appointment for a client who has consented to share records.</p>
+        </div>
+      </div>
+      <form id="appointmentForm" class="workflow-form">
+        <label for="appointmentClient">Client</label>
+        <select id="appointmentClient" required>
+          <option value="">Choose a client</option>
+        </select>
+        <label for="appointmentDate">Date and time</label>
+        <input id="appointmentDate" type="datetime-local" required>
+        <label for="appointmentPurpose">Appointment note</label>
+        <input id="appointmentPurpose" type="text" maxlength="160"
+          placeholder="Optional, non-sensitive note">
+        <button class="primary-btn" type="submit">Schedule Appointment</button>
+      </form>
+      <p class="workflow-notice" id="appointmentNotice" role="status">
+        Appointments are saved securely and visible to the selected client.
+      </p>
+      <div class="results-list" id="appointmentList" aria-live="polite"></div>
+    </section>
+
+    <section class="panel tab-panel" id="assessments" role="tabpanel"
+      aria-labelledby="tab-assessments" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Client Assessments</h2>
+          <p>Review the assessment results associated with each client.</p>
+        </div>
+        <label class="filter-label" for="assessmentClient">Filter client</label>
+        <select id="assessmentClient">
+          <option value="">All clients</option>
+        </select>
+      </div>
+      <div class="results-list" id="assessmentList" aria-live="polite"></div>
+      <p class="workflow-notice">
+        Recorded wellness indicators are not a confirmed diagnosis.
+      </p>
+    </section>
+
+    <section class="panel tab-panel" id="messages" role="tabpanel"
+      aria-labelledby="tab-messages" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Messages</h2>
+          <p>Search by client name or ID, then open a conversation.</p>
+        </div>
+      </div>
+      <div class="messenger">
+        <aside class="conversation-sidebar" aria-label="Client conversations">
+          <label class="sr-only" for="clientSearch">Search clients</label>
+          <input id="clientSearch" type="search"
+            placeholder="Search client ID or name..." aria-label="Search clients">
+          <div class="conversation-list" id="conversationList"
+            role="listbox" aria-label="Clients"></div>
+        </aside>
+        <section class="conversation" aria-label="Conversation">
+          <header class="conversation-header" id="conversationHeader">
+            <div class="conversation-avatar" id="conversationAvatar">?</div>
+            <div>
+              <h3 id="conversationClientName">Select a client</h3>
+              <p id="conversationClientId">Choose a client from the list</p>
+            </div>
+          </header>
+          <div class="conversation-empty" id="conversationEmpty">
+            Select a client to view and write messages.
+          </div>
+          <div class="chat-messages" id="chatMessages"
+            aria-live="polite" aria-label="Conversation messages" hidden></div>
+          <form id="messageForm" class="chat-compose" hidden>
+            <label class="sr-only" for="messageText">Write a message</label>
+            <textarea id="messageText" rows="2" maxlength="2000"
+              required placeholder="Write a message..."></textarea>
+            <button class="primary-btn" type="submit">Send</button>
+          </form>
+        </section>
+      </div>
+      <p class="workflow-notice" id="messageNotice" role="status">
+        Messages are delivered to the selected, authorized client's inbox.
+      </p>
+    </section>
+
+    <section class="panel tab-panel" id="reports" role="tabpanel"
+      aria-labelledby="tab-reports" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Reports</h2>
+          <p>Export the currently displayed wellness results.</p>
+        </div>
+        <button class="primary-btn" id="exportReport">
+          Export CSV
+        </button>
+      </div>
+      <p class="helper">
+        Reports contain recorded wellness indicators, not a confirmed
+        psychiatric diagnosis.
+      </p>
+    </section>
+
+    <section class="panel tab-panel" id="notes" role="tabpanel"
+      aria-labelledby="tab-notes" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Clinical Notes</h2>
+          <p>Private notes visible only to you and linked to the selected client.</p>
+        </div>
+      </div>
+      <form id="clinicalNoteForm" class="workflow-form">
+        <label for="clinicalNoteClient">Client</label>
+        <select id="clinicalNoteClient" required>
+          <option value="">Choose a client</option>
+        </select>
+        <label for="clinicalNoteText">Clinical note</label>
+        <textarea id="clinicalNoteText" rows="5" maxlength="5000"
+          required placeholder="Write a private note for this client..."></textarea>
+        <button class="primary-btn" type="submit">Save Private Note</button>
+      </form>
+      <p class="workflow-notice" id="clinicalNoteNotice" role="status" hidden></p>
+      <div class="results-list" id="clinicalNotesList" aria-live="polite"></div>
+      <p class="helper">
+        Notes are not shared with the client or other psychiatrists.
+      </p>
+    </section>
+  </main>
+
+  <div class="settings-backdrop" id="settingsDialog" hidden>
+    <section class="settings-dialog" role="dialog" aria-modal="true"
+      aria-labelledby="settingsTitle" aria-describedby="settingsDescription">
+      <button class="settings-close" id="closeSettings"
+        type="button" aria-label="Close settings">×</button>
+      <p class="eyebrow">PROFESSIONAL PORTAL</p>
+      <h2 id="settingsTitle">Settings</h2>
+      <p id="settingsDescription">
+        Manage the appearance of your dashboard and review account information.
+      </p>
+      <div class="settings-info">
+        <strong>Account</strong>
+        <span id="professionalAccountInfo">Verified psychiatrist · Professional Portal</span>
+      </div>
+      <p class="settings-note">
+        Dark mode can be changed from the Professional Account menu.
+        Only clients who explicitly authorize your account appear in this portal.
+      </p>
+    </section>
+  </div>
+</body>
+</html>

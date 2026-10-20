@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATIP AI | Client Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/api.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">A</div>
+      <div>
+        <h2>ATIP AI</h2>
+        <p>Mental Health Wellness</p>
+      </div>
+    </div>
+
+    <nav role="tablist" aria-label="Wellness sections" aria-orientation="vertical">
+      <a class="active" id="tab-dashboard" role="tab" aria-selected="true" aria-controls="dashboard" href="#dashboard">Dashboard</a>
+      <a id="tab-my-results" role="tab" aria-selected="false" aria-controls="my-results" href="#my-results">My Results</a>
+      <a id="tab-activities" role="tab" aria-selected="false" aria-controls="activities" href="#activities">Wellness Activities</a>
+      <a id="tab-my-history" role="tab" aria-selected="false" aria-controls="my-history" href="#my-history">Mood History</a>
+      <a id="tab-appointments" role="tab" aria-selected="false" aria-controls="appointments" href="#appointments">Appointments</a>
+      <a id="tab-client-messages" role="tab" aria-selected="false" aria-controls="client-messages" href="#client-messages">Messages</a>
+      <a id="tab-settings" role="tab" aria-selected="false" aria-controls="settings" href="#settings">Profile & Settings</a>
+    </nav>
+
+    <div class="sidebar-message">
+      <div class="leaf">✦</div>
+      <p>Your mental wellness matters.</p>
+      <small>Take one step at a time.</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">My Wellness Dashboard</h1>
+        <p id="pageDescription">Your personal emotional wellness space.</p>
+      </div>
+      <div class="account-menu">
+        <button class="profile account-menu-button" id="accountMenuButton"
+          type="button" aria-expanded="false" aria-controls="accountMenu">
+          <span class="avatar" id="clientAvatar">C</span>
+          <span class="account-label">
+            <strong id="clientName">Client</strong>
+            <span id="clientIdLabel">Client account</span>
+          </span>
+          <span class="account-chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="account-dropdown" id="accountMenu" hidden>
+          <div class="account-list" id="accountList" aria-label="Saved accounts"></div>
+          <button class="account-action" id="settingsAction" type="button">Settings</button>
+          <button class="account-action" id="addAccountAction" type="button">Add account</button>
+          <button class="account-action" id="darkModeAction" type="button" aria-pressed="false">Dark mode: Off</button>
+          <button class="account-action logout-action" id="logoutAction" type="button">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="tab-panel" id="dashboard" role="tabpanel" aria-labelledby="tab-dashboard">
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">YOUR WELLNESS JOURNEY</p>
+          <h2>Hello, <span id="welcomeName">there</span>.</h2>
+          <p>Your feelings matter. Give yourself time to reflect and grow.</p>
+        </div>
+      </section>
+
+      <section class="panel suggestions" aria-labelledby="suggestionsTitle">
+        <div class="panel-heading">
+          <div>
+            <h2 id="suggestionsTitle">Gentle Wellness Suggestions</h2>
+            <p>Small steps you can try at your own pace.</p>
+          </div>
+        </div>
+        <ul class="suggestion-list">
+          <li><strong>Take a mindful pause.</strong> Breathe slowly and notice how you feel, without judging yourself.</li>
+          <li><strong>Connect with someone you trust.</strong> A simple conversation can help you feel supported.</li>
+          <li><strong>Make room for rest.</strong> Choose one calming activity, like stretching, listening to music, or stepping outside.</li>
+        </ul>
+        <p class="helper">These are general wellness ideas, not a substitute for professional mental health care.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="videoTitle">
+        <div class="panel-heading">
+          <div>
+            <h2 id="videoTitle">Learn About Mental Health</h2>
+            <p>Short videos about depression and stress, from TED-Ed.</p>
+          </div>
+        </div>
+        <div class="video-gallery">
+          <article class="video-card">
+            <h3>What is depression?</h3>
+            <a
+              class="video-preview"
+              href="https://www.youtube.com/watch?v=z-IR48Mb3W0"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Play What is depression? by TED-Ed on YouTube">
+              <img
+                src="https://img.youtube.com/vi/z-IR48Mb3W0/hqdefault.jpg"
+                alt="Preview image for the TED-Ed video What is depression?"
+                loading="lazy">
+              <span class="video-play" aria-hidden="true"></span>
+              <span class="video-watch-label">Click to watch</span>
+            </a>
+            <p class="video-credit">Helen M. Farrell, TED-Ed</p>
+          </article>
+          <article class="video-card">
+            <h3>How stress affects your brain</h3>
+            <a
+              class="video-preview"
+              href="https://www.youtube.com/watch?v=WuyPuH9ojCE"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Play How stress affects your brain by TED-Ed on YouTube">
+              <img
+                src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg"
+                alt="Preview image for the TED-Ed video How stress affects your brain"
+                loading="lazy">
+              <span class="video-play" aria-hidden="true"></span>
+              <span class="video-watch-label">Click to watch</span>
+            </a>
+            <p class="video-credit">Madhumita Murgia, TED-Ed</p>
+          </article>
+        </div>
+      </section>
+
+      <footer>
+        ATIP AI · Mental Health Wellness System
+      </footer>
+    </section>
+
+    <section class="panel tab-panel" id="my-results" role="tabpanel" aria-labelledby="tab-my-results" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>My Latest Result</h2>
+          <p>Results received from the connected system.</p>
+        </div>
+        <span class="result-tag">Personal</span>
+      </div>
+
+      <div id="latestResult" class="latest-result">
+        <div class="empty-icon">♡</div>
+        <h3>No results yet</h3>
+        <p>
+          Your results will appear here when the system receives
+          and saves your first recorded result.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel tab-panel" id="my-history" role="tabpanel" aria-labelledby="tab-my-history" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>My Mood History</h2>
+          <p>Your previous recorded wellness results.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Result</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable">
+            <tr>
+              <td colspan="3" class="empty">
+                No history available yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-panel" id="activities" role="tabpanel" aria-labelledby="tab-activities" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Wellness Activities</h2>
+          <p>Simple activities to support your well-being.</p>
+        </div>
+      </div>
+
+      <div class="activity-list">
+        <article class="activity">
+          <div class="activity-icon">◌</div>
+          <div>
+            <h3>Breathing Exercise</h3>
+            <p>Pause and take a few slow, comfortable breaths.</p>
+          </div>
+        </article>
+
+        <article class="activity">
+          <div class="activity-icon">✧</div>
+          <div>
+            <h3>Mindfulness</h3>
+            <p>Notice your surroundings and bring attention to the present.</p>
+          </div>
+        </article>
+
+        <article class="activity">
+          <div class="activity-icon">♡</div>
+          <div>
+            <h3>Self-Care</h3>
+            <p>Make time for rest, hobbies, and supportive relationships.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel tab-panel" id="appointments" role="tabpanel" aria-labelledby="tab-appointments" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>My Appointments</h2>
+          <p>Appointments scheduled by a psychiatrist you authorized.</p>
+        </div>
+      </div>
+      <div class="journal-list" id="clientAppointmentList" aria-live="polite">
+        <p class="empty">Loading appointments...</p>
+      </div>
+      <p class="workflow-notice" id="appointmentClientNotice" role="status" hidden></p>
+    </section>
+
+    <section class="panel tab-panel" id="client-messages" role="tabpanel" aria-labelledby="tab-client-messages" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2>Messages</h2>
+          <p>Private conversations with psychiatrists you have connected with.</p>
+        </div>
+      </div>
+      <div class="client-messenger">
+        <aside class="client-conversation-sidebar" aria-label="Conversations">
+          <div class="client-inbox-heading">
+            <h3>Inbox</h3>
+            <span id="conversationCount">0</span>
+          </div>
+          <label class="sr-only" for="psychiatristSearch">Search conversations</label>
+          <input id="psychiatristSearch" type="search"
+            placeholder="Search conversations..." autocomplete="off">
+          <div class="client-conversation-list" id="clientConversationList"
+            role="listbox" aria-label="Connected psychiatrists"></div>
+          <button class="inbox-connect-link" id="connectFromMessages" type="button">
+            + Connect with a psychiatrist
+          </button>
+        </aside>
+        <section class="client-conversation" aria-label="Message conversation">
+          <header class="client-conversation-header">
+            <span class="client-conversation-avatar" id="conversationPsychiatristAvatar">?</span>
+            <div>
+              <h3 id="conversationPsychiatristName">Your messages</h3>
+              <p id="conversationPsychiatristStatus">Select a conversation to get started</p>
+            </div>
+          </header>
+          <div class="client-chat-messages" id="clientChatMessages"
+            aria-live="polite" aria-label="Conversation messages">
+            <div class="client-chat-empty">
+              <span aria-hidden="true">✉</span>
+              <strong>Your conversations, all in one place</strong>
+              <p>Select a connected psychiatrist to read or send a message.</p>
+            </div>
+          </div>
+          <form id="clientMessageForm" class="client-message-form" hidden>
+            <label class="sr-only" for="clientMessageText">Write a message</label>
+            <textarea id="clientMessageText" rows="2" maxlength="2000"
+              required placeholder="Write a message..."></textarea>
+            <button class="primary-btn" type="submit" aria-label="Send message">Send</button>
+          </form>
+        </section>
+      </div>
+      <p class="workflow-notice" id="clientMessageNotice" role="status">
+        Messages are delivered to the selected, authorized psychiatrist.
+      </p>
+    </section>
+
+    <section class="panel tab-panel" id="settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="profileFormTitle">Profile & Settings</h2>
+          <p id="profileFormDescription">Manage your account and sharing permissions.</p>
+        </div>
+      </div>
+
+      <form id="profileForm">
+        <label for="clientIdInput">Your Client ID</label>
+        <input id="clientIdInput" readonly aria-readonly="true">
+
+        <label for="nameInput">Display Name</label>
+        <input id="nameInput" maxlength="100"
+          autocomplete="name" placeholder="Your display name">
+
+        <button class="primary-btn" id="profileSubmitButton" type="submit">Save Name</button>
+      </form>
+
+      <div class="connection-section">
+        <h3>Share with a psychiatrist</h3>
+        <p>Enter an approved psychiatrist's account email. Your records are not shared until you confirm below.</p>
+        <form id="connectPsychiatristForm">
+          <label for="psychiatristEmail">Psychiatrist email</label>
+          <input id="psychiatristEmail" type="email" maxlength="254"
+            autocomplete="off" placeholder="professional@example.com" required>
+          <label class="consent-check">
+            <input id="sharingConsent" type="checkbox" required>
+            <span>I consent to share my wellness results and messages with this psychiatrist. I can revoke access at any time.</span>
+          </label>
+          <button class="primary-btn" type="submit">Connect and Share</button>
+        </form>
+        <div id="connectionList" class="journal-list" aria-live="polite"></div>
+      </div>
+      <p class="workflow-notice" id="clientNotice" role="status" hidden></p>
+    </section>
+  </main>
+
+  <div class="provider-backdrop" id="providerDialog" hidden>
+    <section class="provider-dialog" role="dialog" aria-modal="true"
+      aria-labelledby="providerDialogTitle" aria-describedby="providerDialogDescription">
+      <button class="provider-dialog-close" id="closeProviderDialog"
+        type="button" aria-label="Close account options">×</button>
+      <p class="eyebrow">ADD AN ACCOUNT</p>
+      <h2 id="providerDialogTitle">Choose a sign-in method</h2>
+      <p class="provider-dialog-description" id="providerDialogDescription">
+        Choose a provider to connect an account.
+      </p>
+      <div class="provider-options">
+        <button class="provider-button google-provider" type="button" data-provider="Google (Gmail)">
+          <span class="provider-icon" aria-hidden="true">G</span>
+          <span>Continue with Google (Gmail)</span>
+        </button>
+        <button class="provider-button facebook-provider" type="button" data-provider="Facebook">
+          <span class="provider-icon" aria-hidden="true">f</span>
+          <span>Continue with Facebook</span>
+        </button>
+        <button class="provider-button discord-provider" type="button" data-provider="Discord">
+          <span class="provider-icon" aria-hidden="true">D</span>
+          <span>Continue with Discord</span>
+        </button>
+      </div>
+      <p class="provider-status" id="providerStatus" role="status" hidden></p>
+      <p class="provider-setup-note">
+        Social sign-in is not configured yet. Provider credentials and secure callback URLs are required.
+      </p>
+    </section>
+  </div>
+</body>
+</html>

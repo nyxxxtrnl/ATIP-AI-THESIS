@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e2d46">
+  <title>ATIP AI | Login & Sign Up</title>
+  <link rel="stylesheet" href="auth.css">
+  <script src="auth.js" defer></script>
+</head>
+<body>
+  <main class="auth-layout">
+    <section class="brand-panel">
+      <div class="brand">
+        <div class="brand-logo">A</div>
+        <div>
+          <h1>ATIP AI</h1>
+          <p>Mental Health Wellness</p>
+        </div>
+      </div>
+
+      <div class="brand-content">
+        <span class="eyebrow">YOUR WELLNESS MATTERS</span>
+        <h2>A space for emotional wellness and care.</h2>
+        <p>
+          Reflect on your emotional wellness, review your results,
+          and access the features designed for your role.
+        </p>
+
+        <div class="brand-note">
+          <span class="note-icon">✦</span>
+          <p>Your feelings matter. Take one step at a time.</p>
+        </div>
+      </div>
+
+      <p class="brand-footer">
+        ATIP AI · Mental Health Wellness System
+      </p>
+    </section>
+
+    <section class="form-panel">
+      <div class="mobile-brand">
+        <div class="brand-logo">A</div>
+        <div>
+          <h1>ATIP AI</h1>
+          <p>Mental Health Wellness</p>
+        </div>
+      </div>
+
+      <div class="auth-card">
+        <div id="message" class="message" role="status"
+          aria-live="polite" hidden></div>
+
+        <!-- LOGIN -->
+        <form id="loginForm" aria-labelledby="loginHeading">
+          <div class="form-heading">
+            <h2 id="loginHeading">Welcome back</h2>
+            <p>Sign in to access your ATIP AI account.</p>
+          </div>
+
+          <label for="loginEmail">Email Address</label>
+          <input id="loginEmail" name="email"
+            type="email" autocomplete="username"
+            placeholder="you@example.com" required>
+
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" name="password"
+            type="password" autocomplete="current-password"
+            placeholder="Enter your password" required>
+
+          <button class="primary-btn" type="submit">
+            Login to Account
+          </button>
+
+          <p class="switch-text">
+            Don't have an account?
+            <button class="text-btn" id="goSignup" type="button">
+              Create one
+            </button>
+          </p>
+        </form>
+
+        <!-- SIGN UP -->
+        <form id="signupForm" aria-labelledby="signupHeading" hidden>
+          <div class="form-heading">
+            <h2 id="signupHeading">Create your account</h2>
+            <p>Choose your role to get started.</p>
+          </div>
+
+          <fieldset class="role-fieldset">
+            <legend>Register as</legend>
+
+            <div class="role-options">
+              <label class="role-option">
+                <input type="radio" name="role"
+                  value="client" checked>
+                <span class="role-card">
+                  <span class="role-icon">♡</span>
+                  <strong>Client</strong>
+                  <small>Personal wellness</small>
+                </span>
+              </label>
+
+              <label class="role-option">
+                <input type="radio" name="role"
+                  value="psychiatrist">
+                <span class="role-card">
+                  <span class="role-icon">✚</span>
+                  <strong>Psychiatrist</strong>
+                  <small>Professional access</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label for="fullName">Full Name</label>
+          <input id="fullName" name="fullName"
+            type="text" autocomplete="name"
+            maxlength="100" placeholder="Enter your full name"
+            required>
+
+          <label for="signupEmail">Email Address</label>
+          <input id="signupEmail" name="email"
+            type="email" autocomplete="email"
+            placeholder="you@example.com" required>
+
+          <label for="signupPassword">Create Password</label>
+          <input id="signupPassword" name="password"
+            type="password" autocomplete="new-password"
+            minlength="8" placeholder="At least 8 characters"
+            required>
+
+          <label for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" name="confirmPassword"
+            type="password" autocomplete="new-password"
+            minlength="8" placeholder="Re-enter your password"
+            required>
+
+          <!-- PSYCHIATRIST VERIFICATION -->
+          <section id="professionalFields" hidden>
+            <div class="verification-heading">
+              <span class="verification-icon">✓</span>
+              <div>
+                <h3>Professional Verification</h3>
+                <p>
+                  Required for psychiatrist accounts.
+                  Access remains restricted until approval.
+                </p>
+              </div>
+            </div>
+
+            <label for="professionalName">
+              Name on Professional License
+            </label>
+            <input id="professionalName" name="professionalName"
+              type="text" maxlength="100"
+              placeholder="Enter name as shown on license">
+
+            <label for="licenseNumber">
+              Professional License Number
+            </label>
+            <input id="licenseNumber" name="licenseNumber"
+              type="text" maxlength="60"
+              autocomplete="off"
+              placeholder="Enter your license number">
+
+            <label for="licenseDocument">
+              Professional ID / License Document
+            </label>
+            <input id="licenseDocument" name="licenseDocument"
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              aria-describedby="documentHelp">
+
+            <p id="documentHelp" class="field-help">
+              Accepted formats: JPG, PNG, PDF. Maximum size: 5 MB.
+              Use a valid professional credential for verification.
+            </p>
+
+            <label class="consent-row">
+              <input id="verificationConsent" type="checkbox">
+              <span>
+                I confirm that the submitted professional information
+                is accurate and consent to its secure review for
+                account verification.
+              </span>
+            </label>
+
+            <div class="notice">
+              <strong>Verification required</strong>
+              <p>
+                Registration does not confirm that you are licensed.
+                A reviewer must verify your credentials before
+                professional dashboard access is granted.
+              </p>
+            </div>
+          </section>
+
+          <label class="consent-row general-consent">
+            <input id="termsConsent" type="checkbox" required>
+            <span>
+              I confirm that the information provided is accurate
+              and agree to the system's privacy notice and terms.
+            </span>
+          </label>
+
+          <button class="primary-btn" type="submit">
+            Create Account
+          </button>
+
+          <p class="switch-text">
+            Already registered?
+            <button class="text-btn" id="goLogin" type="button">
+              Login
+            </button>
+          </p>
+        </form>
+
+        <!-- STATUS VIEW -->
+        <section id="statusView" hidden>
+          <div class="status-icon">✓</div>
+          <h2 id="statusTitle">Registration submitted</h2>
+          <p id="statusDescription"></p>
+          <button class="primary-btn" id="backToLogin" type="button">
+            Return to Login
+          </button>
+        </section>
+
+        <p class="security-footer">
+          Protect your account. Never share your password.
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
