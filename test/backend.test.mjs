@@ -121,7 +121,16 @@ test("auth, consent, records, appointments, messages, and revocation are enforce
     }
     if (page === "/Client%20Dashboard/index.html") {
       assert.match(html, /<section[^>]*id="settings"[^>]*hidden/);
-      assert.match(html, /<form id="profileForm" hidden>/);
+      assert.match(html, /id="tab-settings"[^>]*href="#settings"/);
+      assert.match(html, /<section[^>]*aria-labelledby="profileSettingsTitle"/);
+      assert.match(html, /<form id="profileForm">/);
+      assert.match(html, /id="clientIdInput"/);
+      assert.match(html, /id="nameInput"/);
+      assert.match(html, /data-tab-target="my-history"/);
+      const clientStylesResponse = await fetch(`${baseUrl}/Client%20Dashboard/style.css`);
+      assert.equal(clientStylesResponse.status, 200);
+      const clientStyles = await clientStylesResponse.text();
+      assert.match(clientStyles, /@media \(min-width: 601px\)\s*\{\s*#tab-settings\s*\{\s*display:\s*none;/);
     }
     if (page === "/Psychiatrist%20Dashboard/psychiatrist.html") {
       assert.match(html, /<section[^>]*id="profile"[^>]*hidden/);

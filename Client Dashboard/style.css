@@ -151,8 +151,45 @@ nav a.active {
   display: none;
 }
 
+@media (min-width: 601px) {
+  #tab-settings {
+    display: none;
+  }
+}
+
 .mobile-secondary-nav {
-  display: none;
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.mobile-secondary-nav h3,
+.profile-settings-section h3 {
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.mobile-secondary-nav button {
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.profile-settings-section {
+  margin-bottom: 22px;
+}
+
+.profile-settings-section h3 {
+  margin-bottom: 12px;
 }
 
 .demo-notice {
@@ -1393,34 +1430,12 @@ footer {
   }
 
   .mobile-secondary-nav {
-    display: grid;
-    gap: 8px;
     margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
   }
 
   .settings-appearance {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .mobile-secondary-nav h3 {
-    color: var(--navy);
-    font-size: 14px;
-  }
-
-  .mobile-secondary-nav button {
-    min-height: 42px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--white);
-    color: var(--text);
-    font: inherit;
-    font-size: 13px;
-    text-align: left;
-    cursor: pointer;
   }
 
   .connection-row {

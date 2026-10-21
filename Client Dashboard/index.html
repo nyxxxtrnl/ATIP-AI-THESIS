@@ -317,16 +317,19 @@
         </div>
       </div>
 
-      <form id="profileForm" hidden>
-        <label for="clientIdInput">Your Client ID</label>
-        <input id="clientIdInput" readonly aria-readonly="true">
+      <section class="profile-settings-section" aria-labelledby="profileSettingsTitle">
+        <h3 id="profileSettingsTitle">Settings</h3>
+        <form id="profileForm">
+          <label for="clientIdInput">Your Client ID</label>
+          <input id="clientIdInput" readonly aria-readonly="true">
 
-        <label for="nameInput">Display Name</label>
-        <input id="nameInput" maxlength="100"
-          autocomplete="name" placeholder="Your display name">
+          <label for="nameInput">Display Name</label>
+          <input id="nameInput" maxlength="100"
+            autocomplete="name" placeholder="Your display name">
 
-        <button class="primary-btn" id="profileSubmitButton" type="submit">Save Name</button>
-      </form>
+          <button class="primary-btn" id="profileSubmitButton" type="submit">Save Name</button>
+        </form>
+      </section>
 
       <section class="settings-appearance" aria-labelledby="appearanceTitle">
         <div>
@@ -354,8 +357,8 @@
         <div id="connectionList" class="journal-list" aria-live="polite"></div>
       </div>
       <div class="mobile-secondary-nav">
-        <h3>More sections</h3>
-        <button type="button" data-tab-target="my-history">Mood History</button>
+        <h3>More options</h3>
+        <button type="button" data-tab-target="my-history">Open Mood History</button>
       </div>
       <p class="workflow-notice" id="clientNotice" role="status" hidden></p>
     </section>
